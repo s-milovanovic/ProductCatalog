@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using ProductCatalog.Models;
 using ProductCatalog.Service;
+using ProductCatalog.ViewModels;
 
 namespace ProductCatalog.Controllers
 {
@@ -43,6 +44,25 @@ namespace ProductCatalog.Controllers
             }
 
             return View(product);
+        }
+
+        public async Task<ActionResult> New()
+        {
+            var cancellationToken = HttpContext.Request.TimedOutToken;
+
+            IEnumerable<Category> categories = await _productRepository.GetAllProductCategoriesAsync(cancellationToken);
+            IEnumerable<Manufacturer> manufacturers = await _productRepository.GetAllManufacturersAsync(cancellationToken);
+            IEnumerable<Supplier> suppliers = await _productRepository.GetAllSuppliersAsync(cancellationToken);
+
+            var productCreateViewModel = new ProductFormViewModel
+            {
+                Categories = categories,
+                Manufacturers = manufacturers,
+                Suppliers = suppliers,
+                Product = new Product()
+            };
+
+            return View("ProductForm", productCreateViewModel);
         }
     }
 }
