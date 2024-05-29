@@ -45,9 +45,13 @@ namespace ProductCatalog.Repository
             return product.Id;
         }
 
-        public Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken)
+        public async Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            _dbContext.Products.Attach(product);
+
+            _dbContext.Entry(product).State = EntityState.Modified;
+
+            return await _dbContext.SaveChangesAsync(cancellationToken) != 0;
         }
 
         public async Task<IEnumerable<Category>> GetAllProductCategoriesAsync(CancellationToken cancellationToken)
