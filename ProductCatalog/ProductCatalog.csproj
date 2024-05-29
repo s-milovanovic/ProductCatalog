@@ -183,6 +183,7 @@
     <Compile Include="Repository\ProductDbContext.cs" />
     <Compile Include="Repository\ProductDbRepository.cs" />
     <Compile Include="Service\IProductRepository.cs" />
+    <Compile Include="ViewModels\ProductFormViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
