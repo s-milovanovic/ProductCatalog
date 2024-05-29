@@ -17,32 +17,36 @@ else
                 <th>Manufacturer</th>
                 <th>Supplier</th>
                 <th>Price</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var product in Model)
             {
-                <tr>
-                    <td>
-                        @Html.ActionLink(product.Name, "Details", "Products", new { id = product.Id }, new { @class = "btn btn - primary" })
-                    </td>
-                    <td>
-                        @product.Description
-                    </td>
-                    <td>
-                        @product.Category.Name
-                    </td>
-                    <td>
-                        @product.Manufacturer.Name
-                    </td>
-                    <td>
-                        @product.Supplier.Name
-                    </td>
-                    <td>
-                        @product.Price
-                        <span>RSD</span>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.ActionLink(product.Name, "Details", "Products", new { id = product.Id }, new { @class = "btn btn - primary" })
+                </td>
+                <td>
+                    @product.Description
+                </td>
+                <td>
+                    @product.Category.Name
+                </td>
+                <td>
+                    @product.Manufacturer.Name
+                </td>
+                <td>
+                    @product.Supplier.Name
+                </td>
+                <td>
+                    @product.Price
+                    <span>RSD</span>
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Products", new { id = product.Id }, new { @class = "btn btn-light" })
+                </td>
+            </tr>
             }
         </tbody>
     </table>
