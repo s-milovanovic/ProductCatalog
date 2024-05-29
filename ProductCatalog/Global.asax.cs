@@ -40,9 +40,16 @@ namespace ProductCatalog
             var configuration = GlobalConfiguration.Configuration;
             configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
+            // Register MVC areas
             AreaRegistration.RegisterAllAreas();
+
+            // Register global filters
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+            // Register MVC routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            // Register bundles
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }

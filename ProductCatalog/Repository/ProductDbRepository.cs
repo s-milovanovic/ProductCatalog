@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Threading;
 using System.Threading.Tasks;
 using ProductCatalog.Models;
@@ -8,9 +9,22 @@ namespace ProductCatalog.Repository
 {
     public class ProductDbRepository : IProductRepository
     {
-        public Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
+        private readonly ProductDbContext _dbContext;
+
+        public ProductDbRepository(ProductDbContext dbContext)
         {
-            throw new System.NotImplementedException();
+            _dbContext = dbContext;
+        }
+
+        public async Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
+        {
+            List<Product> products = await _dbContext.Products
+                .Include(product => product.Supplier)
+                .Include(product => product.Category)
+                .Include(product => product.Manufacturer)
+                .ToListAsync(cancellationToken);
+
+            return products.Count > 0 ? products : null;
         }
 
         public Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
