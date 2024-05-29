@@ -33,7 +33,7 @@ namespace ProductCatalog.Controllers
             return View(products);
         }
 
-        // GET: Products/1
+        // GET: Products/Details/1
         public async Task<ActionResult> Details(int id)
         {
             var cancellationToken = HttpContext.Request.TimedOutToken;
@@ -95,6 +95,33 @@ namespace ProductCatalog.Controllers
             await SetProductFormViewModel(model, cancellationToken);
 
             return View("ProductForm", model);
+        }
+
+        // GET: Products/Edit/1
+        public async Task<ActionResult> Edit(int id)
+        {
+            var cancellationToken = HttpContext.Request.TimedOutToken;
+
+            var product = await _productRepository.GetProductByIdAsync(id, cancellationToken);
+
+            if (product is null)
+            {
+                return HttpNotFound();
+            }
+
+            IEnumerable<Category> categories = await _productRepository.GetAllProductCategoriesAsync(cancellationToken);
+            IEnumerable<Manufacturer> manufacturers = await _productRepository.GetAllManufacturersAsync(cancellationToken);
+            IEnumerable<Supplier> suppliers = await _productRepository.GetAllSuppliersAsync(cancellationToken);
+
+            var viewModel = new ProductFormViewModel
+            {
+                Product = product,
+                Categories = categories,
+                Manufacturers = manufacturers,
+                Suppliers = suppliers
+            };
+
+            return View("ProductForm", viewModel);
         }
 
         #region PrivateMethods
