@@ -1,10 +1,7 @@
-﻿using System;
+﻿using ProductCatalog.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ProductCatalog.Models;
 
 namespace ProductCatalog.Service
 {
