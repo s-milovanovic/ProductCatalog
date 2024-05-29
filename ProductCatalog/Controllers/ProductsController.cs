@@ -124,6 +124,40 @@ namespace ProductCatalog.Controllers
             return View("ProductForm", viewModel);
         }
 
+        // POST: Products/Update/1
+        [HttpPost]
+        public async Task<ActionResult> Update(ProductFormViewModel model)
+        {
+            var cancellationToken = HttpContext.Request.TimedOutToken;
+
+            if (ModelState.IsValid)
+            {
+                var product = new Product
+                {
+                    Id = model.Product.Id,
+                    Name = model.Product.Name,
+                    Description = model.Product.Description,
+                    CategoryId = model.Product.CategoryId,
+                    ManufacturerId = model.Product.ManufacturerId,
+                    SupplierId = model.Product.SupplierId,
+                    Price = model.Product.Price
+                };
+
+                bool isProductUpdated = await _productRepository.UpdateProductAsync(product, cancellationToken);
+
+                if (isProductUpdated)
+                {
+                    return RedirectToAction("Index", "Products");
+                }
+
+                return View("ProductForm", model);
+            }
+
+            await SetProductFormViewModel(model, cancellationToken);
+
+            return View("ProductForm", model);
+        }
+
         #region PrivateMethods
 
         private async Task SetProductFormViewModel(ProductFormViewModel model, CancellationToken cancellationToken)
