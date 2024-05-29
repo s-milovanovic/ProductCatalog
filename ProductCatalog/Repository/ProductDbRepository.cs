@@ -27,9 +27,13 @@ namespace ProductCatalog.Repository
             return products.Count > 0 ? products : null;
         }
 
-        public Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await _dbContext.Products
+                .Include(product => product.Supplier)
+                .Include(product => product.Category)
+                .Include(product => product.Manufacturer)
+                .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
         }
 
         public Task<int> InsertProductAsync(Product product, CancellationToken cancellationToken)
