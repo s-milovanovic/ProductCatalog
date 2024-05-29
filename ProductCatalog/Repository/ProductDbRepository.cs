@@ -46,9 +46,9 @@ namespace ProductCatalog.Repository
             throw new System.NotImplementedException();
         }
 
-        public Task<IEnumerable<Category>> GetAllProductCategoriesAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Category>> GetAllProductCategoriesAsync(CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await _dbContext.Categories.ToListAsync(cancellationToken);
         }
 
         public Task<IEnumerable<Supplier>> GetAllSuppliersAsync(CancellationToken cancellationToken)

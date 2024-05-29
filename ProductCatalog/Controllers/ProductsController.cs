@@ -46,6 +46,7 @@ namespace ProductCatalog.Controllers
             return View(product);
         }
 
+        // GET: Products/New
         public async Task<ActionResult> New()
         {
             var cancellationToken = HttpContext.Request.TimedOutToken;
