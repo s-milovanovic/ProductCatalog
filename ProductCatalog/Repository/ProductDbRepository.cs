@@ -56,9 +56,9 @@ namespace ProductCatalog.Repository
             return await _dbContext.Suppliers.ToListAsync(cancellationToken);
         }
 
-        public Task<IEnumerable<Manufacturer>> GetAllManufacturersAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Manufacturer>> GetAllManufacturersAsync(CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await _dbContext.Manufacturers.ToListAsync(cancellationToken);
         }
     }
 }
