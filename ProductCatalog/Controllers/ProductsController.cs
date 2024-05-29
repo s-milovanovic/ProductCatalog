@@ -29,5 +29,20 @@ namespace ProductCatalog.Controllers
 
             return View(products);
         }
+
+        // GET: Products/1
+        public async Task<ActionResult> Details(int id)
+        {
+            var cancellationToken = HttpContext.Request.TimedOutToken;
+
+            var product = await _productRepository.GetProductByIdAsync(id, cancellationToken);
+
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(product);
+        }
     }
 }
