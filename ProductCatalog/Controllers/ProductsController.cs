@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Routing;
 using ProductCatalog.Models;
 using ProductCatalog.Service;
 using ProductCatalog.ViewModels;
@@ -65,5 +67,45 @@ namespace ProductCatalog.Controllers
 
             return View("ProductForm", productCreateViewModel);
         }
+
+        // POST: Products
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(ProductFormViewModel model)
+        {
+            var cancellationToken = HttpContext.Request.TimedOutToken;
+
+            if (ModelState.IsValid)
+            {
+                var product = new Product
+                {
+                    Name = model.Product.Name,
+                    Description = model.Product.Description,
+                    CategoryId = model.Product.CategoryId,
+                    ManufacturerId = model.Product.ManufacturerId,
+                    SupplierId = model.Product.SupplierId,
+                    Price = model.Product.Price
+                };
+
+                int productId = await _productRepository.InsertProductAsync(product, cancellationToken);
+
+                return RedirectToAction("Details", "Products", new RouteValueDictionary { { "Id", productId } });
+            }
+
+            await SetProductFormViewModel(model, cancellationToken);
+
+            return View("ProductForm", model);
+        }
+
+        #region PrivateMethods
+
+        private async Task SetProductFormViewModel(ProductFormViewModel model, CancellationToken cancellationToken)
+        {
+            model.Categories = await _productRepository.GetAllProductCategoriesAsync(cancellationToken);
+            model.Manufacturers = await _productRepository.GetAllManufacturersAsync(cancellationToken);
+            model.Suppliers = await _productRepository.GetAllSuppliersAsync(cancellationToken);
+        }
+
+        #endregion
     }
 }
