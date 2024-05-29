@@ -36,9 +36,13 @@ namespace ProductCatalog.Repository
                 .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
         }
 
-        public Task<int> InsertProductAsync(Product product, CancellationToken cancellationToken)
+        public async Task<int> InsertProductAsync(Product product, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            _dbContext.Products.Add(product);
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return product.Id;
         }
 
         public Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken)
