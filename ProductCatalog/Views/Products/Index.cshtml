@@ -1,8 +1,49 @@
 ﻿@model System.Collections.Generic.IEnumerable<ProductCatalog.Models.Product>
 
-@{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
-}
+<h2>Products</h2>
 
-<h2>title</h2>
+@if (!Model.Any())
+{
+    <p>We don't have any customers yet.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Product name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Manufacturer</th>
+            <th>Supplier</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>
+                    @product.Name
+                </td>
+                <td>
+                    @product.Description
+                </td>
+                <td>
+                    @product.Category.Name
+                </td>
+                <td>
+                    @product.Manufacturer.Name
+                </td>
+                <td>
+                    @product.Supplier.Name
+                </td>
+                <td>
+                    @product.Price
+                    <span>RSD</span>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
