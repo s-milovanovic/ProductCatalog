@@ -122,5 +122,48 @@ namespace ProductCatalog.Controllers.Api
                 }
             }
         }
+
+        //PUT /api/products/1
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateProduct(int id, [FromBody] ProductDto productDto)
+        {
+            try
+            {
+                var cancellationToken = HttpContext.Current.Request.TimedOutToken;
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var selectedProduct = await _productRepository.GetProductByIdAsync(id, cancellationToken);
+
+                if (selectedProduct == null)
+                {
+                    return NotFound();
+                }
+
+                var product = new Product
+                {
+                    Id = productDto.Id,
+                    Name = productDto.Name,
+                    Description = productDto.Description,
+                    CategoryId = productDto.Category.Id,
+                    ManufacturerId = productDto.Manufacturer.Id,
+                    SupplierId = productDto.Supplier.Id,
+                    Price = productDto.Price
+                };
+
+                //Mapper.Map(productDto, selectedProduct);
+
+                await _productRepository.InsertProductAsync(product, cancellationToken);
+
+                return StatusCode(HttpStatusCode.NoContent); // 204 No Content
+            }
+            catch (Exception exception)
+            {
+                return InternalServerError(exception);
+            }
+        }
     }
 }
