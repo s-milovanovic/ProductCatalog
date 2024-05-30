@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 
 namespace ProductCatalog.Repository
 {
+    public class FileContext
+    {
+        public List<Product> Products { get; } = new List<Product>();
+
+        public List<Category> Categories { get; } = new List<Category>();
+
+        public List<Supplier> Suppliers { get; } = new List<Supplier>();
+
+        public List<Manufacturer> Manufacturers { get; } = new List<Manufacturer>();
+    }
+
     public class ProductFileRepository : IProductRepository
     {
         public Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
