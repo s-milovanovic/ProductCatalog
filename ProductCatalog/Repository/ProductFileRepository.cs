@@ -1,7 +1,10 @@
-﻿using ProductCatalog.Models;
+﻿using System;
+using Newtonsoft.Json;
+using ProductCatalog.Models;
 using ProductCatalog.Service;
-using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,39 +23,93 @@ namespace ProductCatalog.Repository
 
     public class ProductFileRepository : IProductRepository
     {
-        public Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
+        private const string FileName = "ProductCatalog.json";
+        private readonly FileContext _fileContext;
+
+        public ProductFileRepository()
         {
-            throw new NotImplementedException();
+            _fileContext = LoadFileContext();
         }
 
-        public Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
+        private FileContext LoadFileContext()
         {
-            throw new NotImplementedException();
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            const string relativeFolderPath = "Files";
+            const string fileName = "ProductCatalog.json";
+            string filePath = Path.Combine(baseDirectory, relativeFolderPath, fileName);
+
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<FileContext>(json);
+            }
+
+            return new FileContext();
         }
 
-        public Task<int> InsertProductAsync(Product product, CancellationToken cancellationToken)
+        private Task SaveFileContextAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            string json = JsonConvert.SerializeObject(_fileContext);
+
+            File.WriteAllText(FileName, json);
+
+            return Task.CompletedTask;
         }
 
-        public Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult<IEnumerable<Product>>(_fileContext.Products);
         }
 
-        public Task<IEnumerable<Category>> GetAllProductCategoriesAsync(CancellationToken cancellationToken)
+        public async Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(_fileContext.Products.Find(p => p.Id == id));
         }
 
-        public Task<IEnumerable<Supplier>> GetAllSuppliersAsync(CancellationToken cancellationToken)
+        public async Task<int> InsertProductAsync(Product product, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            int id = _fileContext.Products.Max(it => it.Id);
+
+            id++;
+
+            product.Id = id;
+
+            await SaveFileContextAsync(cancellationToken);
+
+            return product.Id;
         }
 
-        public Task<IEnumerable<Manufacturer>> GetAllManufacturersAsync(CancellationToken cancellationToken)
+        public async Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var existingProduct = _fileContext.Products.Find(it => it.Id == product.Id);
+
+            if (existingProduct is null)
+            {
+                return false;
+            }
+
+            existingProduct.Name = product.Name;
+            existingProduct.Description = product.Description;
+            existingProduct.Price = product.Price;
+
+            await SaveFileContextAsync(cancellationToken);
+
+            return true;
+        }
+
+        public async Task<IEnumerable<Category>> GetAllProductCategoriesAsync(CancellationToken cancellationToken)
+        {
+            return await Task.FromResult<IEnumerable<Category>>(_fileContext.Categories);
+        }
+
+        public async Task<IEnumerable<Supplier>> GetAllSuppliersAsync(CancellationToken cancellationToken)
+        {
+            return await Task.FromResult<IEnumerable<Supplier>>(_fileContext.Suppliers);
+        }
+
+        public async Task<IEnumerable<Manufacturer>> GetAllManufacturersAsync(CancellationToken cancellationToken)
+        {
+            return await Task.FromResult<IEnumerable<Manufacturer>>(_fileContext.Manufacturers);
         }
     }
 }

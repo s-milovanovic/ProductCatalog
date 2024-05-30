@@ -1,0 +1,20 @@
+{
+  "Categories": [
+    {
+      "Id": 1,
+      "Name": "Sportska oprema"
+    }
+  ],
+  "Manufacturers": [
+    {
+      "Id": 1,
+      "Name": "Apex Engineering Works"
+    }
+  ],
+  "Suppliers": [
+    {
+      "Id": 1,
+      "Name": "Acme Supplies Co."
+    }
+  ] 
+}
