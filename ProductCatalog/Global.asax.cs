@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using Autofac;
+using Autofac.Integration.Mvc;
+using Autofac.Integration.WebApi;
+using AutoMapper;
+using ProductCatalog.Repository;
+using ProductCatalog.Service;
+using System.Reflection;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Autofac;
-using Autofac.Integration.Mvc;
-using Autofac.Integration.WebApi;
-using ProductCatalog.Repository;
-using ProductCatalog.Service;
-using System.Web.Http;
 
 namespace ProductCatalog
 {
@@ -15,6 +16,9 @@ namespace ProductCatalog
     {
         protected void Application_Start()
         {
+            //Initialize AutoMapper
+            Mapper.Initialize(config => config.AddProfile<MappingProfile>());
+
             // Register dependencies
             var builder = new ContainerBuilder();
 
