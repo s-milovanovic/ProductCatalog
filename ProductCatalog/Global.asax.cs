@@ -43,6 +43,9 @@ namespace ProductCatalog
             // Register MVC areas
             AreaRegistration.RegisterAllAreas();
 
+            // Register Web API routes
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+
             // Register global filters
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 

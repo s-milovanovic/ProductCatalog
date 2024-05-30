@@ -25,6 +25,6 @@ namespace ProductCatalog.Models
 
         [Required]
         [Range(1, 999999999, ErrorMessage = "Price must be between 1 and 999999999.")]
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
     }
 }
