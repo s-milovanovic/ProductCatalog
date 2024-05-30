@@ -88,8 +88,6 @@ namespace ProductCatalog.Controllers.Api
 
             try
             {
-                //var product = Mapper.Map<ProductDto, Product>(productDto);
-
                 var product = new Product
                 {
                     Name = productDto.Name,
@@ -143,20 +141,14 @@ namespace ProductCatalog.Controllers.Api
                     return NotFound();
                 }
 
-                var product = new Product
-                {
-                    Id = productDto.Id,
-                    Name = productDto.Name,
-                    Description = productDto.Description,
-                    CategoryId = productDto.Category.Id,
-                    ManufacturerId = productDto.Manufacturer.Id,
-                    SupplierId = productDto.Supplier.Id,
-                    Price = productDto.Price
-                };
+                selectedProduct.Name = productDto.Name;
+                selectedProduct.Description = productDto.Description;
+                selectedProduct.CategoryId = productDto.Category.Id;
+                selectedProduct.ManufacturerId = productDto.Manufacturer.Id;
+                selectedProduct.SupplierId = productDto.Supplier.Id;
+                selectedProduct.Price = productDto.Price;
 
-                //Mapper.Map(productDto, selectedProduct);
-
-                await _productRepository.InsertProductAsync(product, cancellationToken);
+                await _productRepository.UpdateProductAsync(selectedProduct, cancellationToken);
 
                 return StatusCode(HttpStatusCode.NoContent); // 204 No Content
             }
