@@ -7,7 +7,7 @@
     <div class="form-group">
         <label>Name</label>
         @Html.TextBoxFor(m => m.Product.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Product.Name)
+        @Html.ValidationMessageFor(m => m.Product.Name, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label>Description</label>
@@ -16,17 +16,17 @@
     <div class="form-group">
         <label>Category</label>
         @Html.DropDownListFor(m => m.Product.CategoryId, new SelectList(Model.Categories, "Id", "Name"), "Select Category", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Product.CategoryId)
+        @Html.ValidationMessageFor(m => m.Product.CategoryId, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label>Manufacturer</label>
         @Html.DropDownListFor(m => m.Product.ManufacturerId, new SelectList(Model.Manufacturers, "Id", "Name"), "Select Manufacturer", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Product.ManufacturerId)
+        @Html.ValidationMessageFor(m => m.Product.ManufacturerId, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label>Supplier</label>
         @Html.DropDownListFor(m => m.Product.SupplierId, new SelectList(Model.Suppliers, "Id", "Name"), "Select Supplier", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Product.SupplierId)
+        @Html.ValidationMessageFor(m => m.Product.SupplierId, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label>Price</label>
