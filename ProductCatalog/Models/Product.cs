@@ -23,7 +23,6 @@ namespace ProductCatalog.Models
         public int SupplierId { get; set; }
         public Supplier Supplier { get; set; }
 
-        [Required]
         [Range(1, 999999999, ErrorMessage = "Price must be between 1 and 999999999.")]
         public decimal? Price { get; set; }
     }
