@@ -45,5 +45,34 @@ namespace ProductCatalog.Controllers.Api
                 return InternalServerError(exception);
             }
         }
+
+        //GET /api/products/1
+        public async Task<IHttpActionResult> GetProduct(int id)
+        {
+            var cancellationToken = HttpContext.Current.Request.TimedOutToken;
+
+            try
+            {
+                var product = await _productRepository.GetProductByIdAsync(id, cancellationToken);
+
+                if (product is null)
+                {
+                    return NotFound();
+                }
+
+                var productDto = Mapper.Map<Product, ProductDto>(product);
+
+                return Ok(productDto);
+            }
+            catch (Exception exception)
+            {
+                if (exception is HttpRequestException)
+                {
+                    return StatusCode(HttpStatusCode.RequestTimeout);
+                }
+
+                return InternalServerError(exception);
+            }
+        }
     }
 }
