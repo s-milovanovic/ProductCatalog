@@ -189,6 +189,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ProductDbContext.cs" />
     <Compile Include="Repository\ProductDbRepository.cs" />
+    <Compile Include="Repository\ProductFileRepository.cs" />
     <Compile Include="Service\IProductRepository.cs" />
     <Compile Include="ViewModels\ProductFormViewModel.cs" />
   </ItemGroup>
