@@ -74,5 +74,53 @@ namespace ProductCatalog.Controllers.Api
                 return InternalServerError(exception);
             }
         }
+
+        //POST /api/products
+        [HttpPost]
+        public async Task<IHttpActionResult> CreateProduct([FromBody] ProductDto productDto)
+        {
+            var cancellationToken = HttpContext.Current.Request.TimedOutToken;
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                //var product = Mapper.Map<ProductDto, Product>(productDto);
+
+                var product = new Product
+                {
+                    Name = productDto.Name,
+                    Description = productDto.Description,
+                    CategoryId = productDto.Category.Id,
+                    ManufacturerId = productDto.Category.Id,
+                    SupplierId = productDto.Supplier.Id,
+                    Price = productDto.Price
+                };
+
+                int productId = await _productRepository.InsertProductAsync(product, cancellationToken);
+
+                productDto.Id = productId;
+
+                return Created(new Uri(Request.RequestUri + "/" + productId), productDto);
+            }
+            catch (Exception exception)
+            {
+                switch (exception)
+                {
+                    // Log the exception (ex) as needed
+                    // Handle different exception types if necessary and return appropriate responses
+                    case ArgumentNullException _:
+                        return BadRequest("Product data cannot be null.");
+                    case HttpRequestException _:
+                        return StatusCode(HttpStatusCode.RequestTimeout);
+                    default:
+                        // For all other exceptions
+                        return InternalServerError(exception);
+                }
+            }
+        }
     }
 }
