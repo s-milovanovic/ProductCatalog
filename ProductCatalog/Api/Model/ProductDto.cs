@@ -1,6 +1,6 @@
 ﻿using ProductCatalog.Models;
 
-namespace ProductCatalog.Dtos
+namespace ProductCatalog.Api.Dtos
 {
     public class ProductDto
     {

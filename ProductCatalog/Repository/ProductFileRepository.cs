@@ -24,36 +24,12 @@ namespace ProductCatalog.Repository
     public class ProductFileRepository : IProductRepository
     {
         private const string FileName = "ProductCatalog.json";
+        private const string RelativeFolderPath = "Files";
         private readonly FileContext _fileContext;
 
         public ProductFileRepository()
         {
             _fileContext = LoadFileContext();
-        }
-
-        private FileContext LoadFileContext()
-        {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            const string relativeFolderPath = "Files";
-            const string fileName = "ProductCatalog.json";
-            string filePath = Path.Combine(baseDirectory, relativeFolderPath, fileName);
-
-            if (File.Exists(filePath))
-            {
-                string json = File.ReadAllText(filePath);
-                return JsonConvert.DeserializeObject<FileContext>(json);
-            }
-
-            return new FileContext();
-        }
-
-        private Task SaveFileContextAsync(CancellationToken cancellationToken)
-        {
-            string json = JsonConvert.SerializeObject(_fileContext);
-
-            File.WriteAllText(FileName, json);
-
-            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
@@ -68,19 +44,32 @@ namespace ProductCatalog.Repository
 
         public async Task<int> InsertProductAsync(Product product, CancellationToken cancellationToken)
         {
-            int id = _fileContext.Products.Max(it => it.Id);
+            if (product == null) throw new ArgumentNullException(nameof(product));
+
+            int id = 0;
+
+            if (_fileContext.Products.Any())
+            {
+                id = _fileContext.Products.Max(it => it.Id);
+            }
 
             id++;
 
             product.Id = id;
 
-            await SaveFileContextAsync(cancellationToken);
+            SetProductAttributes(product);
+
+            _fileContext.Products.Add(product);
+
+            await SaveFileContextAsync();
 
             return product.Id;
         }
 
         public async Task<bool> UpdateProductAsync(Product product, CancellationToken cancellationToken)
         {
+            if (product == null) throw new ArgumentNullException(nameof(product));
+
             var existingProduct = _fileContext.Products.Find(it => it.Id == product.Id);
 
             if (existingProduct is null)
@@ -92,7 +81,9 @@ namespace ProductCatalog.Repository
             existingProduct.Description = product.Description;
             existingProduct.Price = product.Price;
 
-            await SaveFileContextAsync(cancellationToken);
+            SetProductAttributes(product, existingProduct);
+
+            await SaveFileContextAsync();
 
             return true;
         }
@@ -111,5 +102,52 @@ namespace ProductCatalog.Repository
         {
             return await Task.FromResult<IEnumerable<Manufacturer>>(_fileContext.Manufacturers);
         }
+
+        #region PrivateMethods
+        private void SetProductAttributes(Product product)
+        {
+            product.Category = _fileContext.Categories.SingleOrDefault(it => it.Id == product.CategoryId);
+            product.Manufacturer = _fileContext.Manufacturers.SingleOrDefault(it => it.Id == product.ManufacturerId);
+            product.Supplier = _fileContext.Suppliers.SingleOrDefault(it => it.Id == product.SupplierId);
+        }
+
+        private void SetProductAttributes(Product product, Product existingProduct)
+        {
+            existingProduct.Category = _fileContext.Categories.SingleOrDefault(it => it.Id == product.CategoryId);
+            existingProduct.Manufacturer = _fileContext.Manufacturers.SingleOrDefault(it => it.Id == product.ManufacturerId);
+            existingProduct.Supplier = _fileContext.Suppliers.SingleOrDefault(it => it.Id == product.SupplierId);
+        }
+
+        private FileContext LoadFileContext()
+        {
+            string filePath = GetFilePath();
+
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<FileContext>(json);
+            }
+
+            return new FileContext();
+        }
+
+        private string GetFilePath()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            return Path.Combine(baseDirectory, RelativeFolderPath, FileName);
+        }
+
+        private Task SaveFileContextAsync()
+        {
+             string filePath = GetFilePath();
+
+            string json = JsonConvert.SerializeObject(_fileContext);
+
+            File.WriteAllText(filePath, json);
+
+            return Task.CompletedTask;
+        }
+
+        #endregion
     }
 }

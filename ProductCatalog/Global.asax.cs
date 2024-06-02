@@ -32,6 +32,7 @@ namespace ProductCatalog
             builder.RegisterType<ProductDbContext>().AsSelf().InstancePerRequest();
 
             // Register your service dependencies.
+            //builder.RegisterType<ProductDbRepository>().As<IProductRepository>().InstancePerRequest();
             builder.RegisterType<ProductFileRepository>().As<IProductRepository>().InstancePerRequest();
 
             // Build the container.

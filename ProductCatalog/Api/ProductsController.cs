@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using AutoMapper;
-using ProductCatalog.Dtos;
+using ProductCatalog.Api.Dtos;
 using ProductCatalog.Models;
 using ProductCatalog.Service;
 
-namespace ProductCatalog.Controllers.Api
+namespace ProductCatalog.Api
 {
     public class ProductsController : ApiController
     {
