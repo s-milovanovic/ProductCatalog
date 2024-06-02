@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using AutoMapper;
-using ProductCatalog.Api.Dtos;
+using ProductCatalog.Api.Model;
 using ProductCatalog.Models;
 using ProductCatalog.Service;
 

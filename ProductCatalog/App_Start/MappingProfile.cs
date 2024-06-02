@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ProductCatalog.Api.Dtos;
+using ProductCatalog.Api.Model;
 using ProductCatalog.Models;
 
 namespace ProductCatalog
