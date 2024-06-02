@@ -108,7 +108,6 @@ namespace ProductCatalog.Api
             {
                 switch (exception)
                 {
-                    // Log the exception (ex) as needed
                     // Handle different exception types if necessary and return appropriate responses
                     case ArgumentNullException _:
                         return BadRequest("Product data cannot be null.");
